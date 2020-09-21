@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml" xmlns:v-on="http://www.w3.org/1999/xhtml">
+{% load static %}
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script type="text/javascript" src="{% static 'vue.min.js' %}"></script>
+
+</head>
+<body>
+    <h1>this is a page to view all users</h1>
+    <h6>shop / users </h6>
+
+    {% verbatim %}
+    <div id="priceCalc">
+
+        {{ count }}
+
+        <input type="text" placeholder="Price">
+        <input type="text" placeholder="Count" ref="countInput" v-bind:value="this.count" v-on:input="countUpdate">
+
+        <!--  short
+            <input type="text" placeholder="Count" ref="countInput" :value="this.count" @input="countUpdate">
+        -->
+
+        <input type="text" placeholder="Total Price" >
+        <button type="button">clickable</button>
+
+    </div>
+    {% endverbatim %}
+
+    <script type="text/javascript">
+        let priceCalc= new Vue(
+            {
+                el:'#priceCalc',
+                data: {
+                    price:0,
+                    count:0
+                    
+                },
+                methods:{
+                  countUpdate(){
+                      this.count = this.$refs.countInput.value
+                  }
+                },
+                created(){
+                    console.log('created',this.price)
+                },
+
+                mounted(){
+                    console.log('mounted',this.count)
+                    let callback = () =>{   /* function scope for this*/
+                        this.count++
+                    }
+                    setTimeout(callback, 1000)
+                }
+
+            })
+    </script>
+</body>
+</html>
