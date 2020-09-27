@@ -1,0 +1,80 @@
+{% verbatim %}
+<div id="priceCalc" xmlns:v-on="http://www.w3.org/1999/xhtml" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+
+        {{ count }}
+<!--
+        <input type="text" placeholder="Price">
+        <input type="text" placeholder="Count" ref="countInput" v-bind:value="this.count" v-on:input="countUpdate">
+
+         short
+            <input type="text" placeholder="Count" ref="countInput" :value="this.count" @input="countUpdate">
+
+
+        <input type="text" placeholder="Total Price" >
+        <button type="button">clickable</button>-->
+
+        <input type="text" ref="fname" placeholder="FirstName">
+        <input type="text" ref="lname" placeholder="LastName">
+        <input type="text" ref="tel" placeholder="tel">
+
+        <select name="user_role_id">
+            <option v-for="(item,index) in userRoles" v-bind:key="index" v-bind:value="item.id">
+                {{ item.name }}
+            </option>
+        </select>
+
+        <button v-on:click="saveUser">create</button>
+
+    </div>
+    {% endverbatim %}
+
+    <script type="text/javascript">
+        let priceCalc= new Vue(
+            {
+                el:'#priceCalc',
+                data: {
+                    price:0,
+                    count:0,
+                    userRoles:[]
+
+                },
+                methods:{
+                  countUpdate(){
+                      this.count = this.$refs.countInput.value
+                  },
+                  saveUser(){
+                    axios.post('http://127.0.0.1:8000/api/users/users',{
+                        'first_name':this.$refs.fname.value,
+                        'last_name':this.$refs.lname.value,
+                        'tel':this.$refs.tel.value,
+                        'user_role_id':this.$refs.role_id.value,
+                    }).then((res)=>{
+                        console.log(res.data.message,res.data.data.user)
+                    }).catch((res)=>{
+                        console.log('user creation fail')
+                    })
+                  }
+                },
+                created(){
+                    console.log('created',this.price)
+                    axios.get("http://127.0.0.1:8000/api/users/roles").then(
+                        (res)=>{
+                        console.log('succes',res.data)
+                            this.userRoles=res.data
+                    }
+                    ).catch(
+                        (res)=>{
+                            console.log('fail',res)
+                    })
+                },
+
+                mounted(){
+                    console.log('mounted',this.count)
+                    let callback = () =>{   /* function scope for this*/
+                        this.count++
+                    }
+                    setTimeout(callback, 1000)
+                }
+
+            })
+    </script>
